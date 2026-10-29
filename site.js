@@ -49,3 +49,67 @@
     timer = setTimeout(function () { place(false); }, 150);
   });
 })();
+
+// The reminders on the hero phone arrive one by one, once, when the hero is in view and the paw trail has had its
+// moment. Reduced motion: the finished stack is shown as it is.
+(function () {
+  var list = document.querySelector("[data-notes]");
+  if (!list) return;
+  var items = Array.prototype.slice.call(list.children);
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function layout(arrived) {
+    items.forEach(function (li, i) {
+      li.setAttribute("data-pos", i < arrived ? String(Math.min(arrived - 1 - i, 2)) : "out");
+    });
+    // The ones behind take the newest one's height, so only their edges show below it
+    var top = items[arrived - 1];
+    if (top) list.style.setProperty("--top", top.offsetHeight + "px");
+  }
+  if (reduce || !("IntersectionObserver" in window)) {
+    layout(items.length);
+    list.classList.add("live");
+    return;
+  }
+  layout(0);
+  // Let the hidden state settle before the transitions are switched on
+  requestAnimationFrame(function () { requestAnimationFrame(function () { list.classList.add("live"); }); });
+  var loadedAt = Date.now();
+  var started = false;
+  function run() {
+    if (started) return;
+    started = true;
+    var n = 0;
+    (function next() {
+      n += 1;
+      layout(n);
+      if (n < items.length) setTimeout(next, 1250);
+    })();
+  }
+  var io = new IntersectionObserver(function (entries) {
+    if (!entries.some(function (e) { return e.isIntersecting; })) return;
+    io.disconnect();
+    setTimeout(run, Math.max(600, 2300 - (Date.now() - loadedAt)));
+  }, { threshold: 0.6 });
+  io.observe(list);
+})();
+
+// The leash countdown line (front page and tools page) is written at build time; keep it right on later days.
+(function () {
+  var lines = document.querySelectorAll("[data-leash-line]");
+  if (!lines.length) return;
+  var months = ["januar", "februar", "mars", "april", "mai", "juni", "juli", "august", "september", "oktober", "november", "desember"];
+  var now = new Date();
+  var today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+  var y = now.getFullYear();
+  var start = Date.UTC(y, 3, 1), end = Date.UTC(y, 7, 20);
+  var day = 86400000, text;
+  if (today >= start && today <= end) {
+    var left = Math.round((end - today) / day) + 1;
+    text = "Båndtvang i hele landet nå, " + left + (left === 1 ? " dag" : " dager") + " igjen til og med 20. august.";
+  } else {
+    if (today > end) { y += 1; start = Date.UTC(y, 3, 1); }
+    var until = Math.round((start - today) / day);
+    text = "Båndtvangen starter om " + until + (until === 1 ? " dag" : " dager") + ", 1. " + months[3] + " " + y + ".";
+  }
+  for (var i = 0; i < lines.length; i++) lines[i].textContent = text;
+})();

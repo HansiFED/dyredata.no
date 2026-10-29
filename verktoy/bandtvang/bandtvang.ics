@@ -1,0 +1,23 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Dyredata//Bandtvang//NB
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:bandtvang@dyredata.no
+DTSTAMP:20261029T000000Z
+DTSTART;VALUE=DATE:20270401
+DTEND;VALUE=DATE:20270821
+RRULE:FREQ=YEARLY
+SUMMARY:Båndtvang for hund
+DESCRIPTION:Fra og med 1. april til og med 20. august skal hunder holdes i 
+ bånd eller være forsvarlig innestengt i hele landet. Sjekk også kommune
+ ns regler: https://dyredata.no/verktoy/bandtvang/
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Båndtvang starter i dag
+TRIGGER:PT9H
+END:VALARM
+END:VEVENT
+END:VCALENDAR
