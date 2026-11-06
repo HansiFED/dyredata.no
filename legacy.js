@@ -10,7 +10,7 @@
   var page = root.getAttribute("data-page");
   var api = root.getAttribute("data-url");
   var key = root.getAttribute("data-key");
-  var SUPPORT = "dyredata.no@gmail.com";
+  var SUPPORT = "berentsenmedia@gmail.com";
   var $ = function (name) { return root.querySelector('[data-l="' + name + '"]'); };
   var phone = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   function say(title, text) {
