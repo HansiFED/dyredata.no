@@ -312,7 +312,7 @@ p { margin: 0; }
 .calc { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(20px, 3vw, 28px); display: grid; gap: 18px; }
 .calc label, .calc legend { font-weight: 800; font-size: 16px; display: grid; gap: 8px; }
 .calc .opt { font-weight: 600; color: var(--ink-3); }
-.calc input[type="date"], .calc input[type="text"] { font: 600 18px/1.2 "Nunito", system-ui, sans-serif; color: var(--natt); background: var(--bjork); border: 1.5px solid var(--line); border-radius: 14px; min-height: 52px; padding: 0 14px; width: 100%; -webkit-appearance: none; appearance: none; }
+.calc input[type="date"], .calc input[type="text"], .calc input[type="password"], .calc input[type="email"] { font: 600 18px/1.2 "Nunito", system-ui, sans-serif; color: var(--natt); background: var(--bjork); border: 1.5px solid var(--line); border-radius: 14px; min-height: 52px; padding: 0 14px; width: 100%; -webkit-appearance: none; appearance: none; }
 .calc input:focus-visible { outline: 3px solid var(--mose); outline-offset: 1px; border-color: transparent; }
 .calc .unit { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; }
 .calc .unit span { font-weight: 700; color: var(--ink-2); min-width: 3ch; }
@@ -416,3 +416,16 @@ p { margin: 0; }
 }
 @keyframes drift { from { transform: translateY(22px); } to { transform: translateY(-22px); } }
 @keyframes lift { from { transform: translateY(44px); } to { transform: translateY(-28px); } }
+
+/* Elements switched off with the hidden attribute stay off, also where a class sets display */
+[hidden] { display: none !important; }
+
+/* Pages that finish the old service's login and e-mail flows */
+.legacy-page .calc { max-width: 480px; margin-top: 28px; }
+.legacy-page .cta-row { margin-top: 24px; }
+.legacy-page .btn[disabled], .legacy-page button[disabled] { opacity: 0.6; pointer-events: none; }
+.form-intro { font-weight: 700; color: var(--ink-2); }
+.form-error { color: #b42318; font-weight: 700; }
+@media (prefers-color-scheme: dark) { .form-error { color: #ffb4a8; } }
+.old-share-note { display: none; }
+.old-share .old-share-note { display: block; }

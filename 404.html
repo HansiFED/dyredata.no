@@ -28,17 +28,22 @@
   <link rel="manifest" href="/site.webmanifest">
   <link rel="preload" href="/fonts/fredoka-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/nunito-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/site.css?v=20261029">
+  <link rel="stylesheet" href="/site.css?v=20261106">
   
 <script>
-  // Links from the old service keep working until it closes on 30 June 2027: password reset and e-mail
-  // confirmation links in e-mails sent before the move, shared health and litter links, unsubscribe links.
-  // They go on to the old app's own address, with the token they carry.
+  // Shared health and litter links from the old service go on to its own address while it runs (until 30 June
+  // 2027). While that address sends people back to dyredata.no (it does as long as dyredata.no is its domain at
+  // Lovable), they stay here with an explanation instead of going round in circles. The old login, password and
+  // e-mail pages have their own pages on this site.
   (function () {
     var p = location.pathname;
-    if (/^\/(tilbakestill-passord|epost-bekreftet|epost-verifisert|glemt-passord|unsubscribe|native-oauth-callback)\/?$|^\/(delt|kull-deling)\/[^/]+\/?$/.test(p) && Date.now() < Date.UTC(2027, 6, 1)) {
-      location.replace("https://dyre-vennlig-arkiv.lovable.app" + p.replace(/\/$/, "") + location.search + location.hash);
-    }
+    if (!/^\/(delt|kull-deling)\/[^/]+\/?$/.test(p) || Date.now() >= Date.UTC(2027, 6, 1)) return;
+    document.documentElement.classList.add("old-share");
+    var k = "dd-forwarded:" + p, last = 0;
+    try { last = Number(sessionStorage.getItem(k)) || 0; } catch (e) { return; }
+    if (Date.now() - last < 20000) return;
+    try { sessionStorage.setItem(k, String(Date.now())); } catch (e) { return; }
+    location.replace("https://dyre-vennlig-arkiv.lovable.app" + p.replace(/\/$/, "") + location.search + location.hash);
   })();
 </script>
 
@@ -66,6 +71,7 @@
 <section class="wrap page-hero">
   <h1>Fant ikke siden</h1>
   <p class="lead measure">Lenken kan være gammel. Kennelsidene og nettversjonen av Dyredata med innlogging er avviklet, og alt finnes nå i appen.</p>
+  <p class="lead measure old-share-note">Delte dyr og kull fra den gamle Dyredata-tjenesten vises ikke lenger på nett. Be den som delte lenken om å dele på nytt fra Dyredata-appen.</p>
   <div class="cta-row"><a class="btn btn-primary" href="/">Til forsiden</a><a class="btn btn-dark" href="/last-ned/">Last ned appen</a></div>
 </section>
 
@@ -121,7 +127,7 @@
       </div>
     </div>
   </footer>
-  <script src="/site.js?v=20261029" defer></script>
+  <script src="/site.js?v=20261106" defer></script>
   
 </body>
 </html>

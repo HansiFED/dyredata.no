@@ -1,3 +1,12 @@
+// Login links from the old service that land on the front page (its fallback address) go to the page that
+// finishes them: a password e-mail link or an expired one to the password page, a sign-in to the app bridge.
+(function () {
+  var hash = location.hash;
+  if (location.pathname !== "/" || !/access_token=|error_description=/.test(hash)) return;
+  var reset = /(^|[#&])type=recovery(&|$)|otp_expired/.test(hash);
+  location.replace((reset ? "/tilbakestill-passord/" : "/native-oauth-callback/") + hash);
+})();
+
 // Dyredata website: header line on scroll, and the paw trail across the front page (once, on load).
 (function () {
   var head = document.querySelector(".site-head");
