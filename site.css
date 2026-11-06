@@ -134,6 +134,12 @@ p { margin: 0; }
 .phone.small { width: min(270px, 70vw); border-radius: 44px; padding: 9px; }
 .phone.small img { border-radius: 36px; }
 .phone.small::after { top: 18px; height: 24px; }
+/* Below the app's floating tab bar the screenshots show what was scrolled under it: a clean strip with the home
+   indicator instead (the screenshots' own background colour, in both colour schemes) */
+.phone { --pad: 11px; --r: 42px; }
+.phone.small { --pad: 9px; --r: 36px; }
+.phone-foot { position: absolute; z-index: 1; left: var(--pad); right: var(--pad); bottom: var(--pad); height: calc((100% - 2 * var(--pad)) * 0.04); border-radius: 0 0 var(--r) var(--r); background: linear-gradient(to bottom, rgb(247 247 245 / 0.7), #f7f7f5 22%); pointer-events: none; }
+.phone-foot::after { content: ""; position: absolute; left: 50%; top: 58%; width: 41%; height: 16%; min-height: 3px; transform: translateX(-50%); border-radius: 999px; background: #111; }
 
 /* Photo with the phone in front, overlapping its lower half */
 .duo { display: grid; justify-items: center; width: min(400px, 88vw); }
@@ -296,7 +302,7 @@ p { margin: 0; }
 /* Phones: the screenshots take less of the scroll */
 @media (max-width: 520px) {
   .duo { width: min(318px, 84vw); }
-  .phone.small { width: min(236px, 62vw); border-radius: 40px; padding: 8px; }
+  .phone.small { width: min(236px, 62vw); border-radius: 40px; padding: 8px; --pad: 8px; --r: 33px; }
   .phone.small img { border-radius: 33px; }
   .feature { padding: 32px 0 40px; gap: 22px; }
   .hero-phone { margin-top: 4px; }
@@ -429,3 +435,34 @@ p { margin: 0; }
 @media (prefers-color-scheme: dark) { .form-error { color: #ffb4a8; } }
 .old-share-note { display: none; }
 .old-share .old-share-note { display: block; }
+
+/* The walk, live on the lock screen: a card over the walk photo where the route draws itself (site.js) */
+.walk-shot { position: relative; }
+.walk-live { position: absolute; left: -3%; bottom: 7%; width: min(250px, 66%); padding: 12px 14px 10px; border-radius: 22px; background: rgb(20 28 18 / 0.78); -webkit-backdrop-filter: blur(18px) saturate(1.4); backdrop-filter: blur(18px) saturate(1.4); color: #fff; box-shadow: 0 24px 40px -22px rgb(0 0 0 / 0.6); z-index: 3; }
+.wl-head { display: flex; align-items: center; gap: 8px; font-size: 12.5px; }
+.wl-head b { font-weight: 800; }
+.wl-head span:last-child { margin-left: auto; color: rgb(255 255 255 / 0.7); font-weight: 700; }
+.wl-icon { width: 20px; height: 20px; border-radius: 6px; overflow: hidden; flex: none; }
+.wl-icon svg { width: 100%; height: 100%; display: block; }
+.wl-stats { display: flex; justify-content: space-between; align-items: baseline; margin-top: 6px; font-size: 13px; font-weight: 700; color: rgb(255 255 255 / 0.75); }
+.wl-stats b { font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 26px; color: #fff; font-variant-numeric: tabular-nums; }
+.wl-route { display: block; width: 100%; height: auto; margin-top: 4px; overflow: visible; }
+.wl-route path { fill: none; stroke: #8fd14f; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
+.wl-route .wl-start { fill: rgb(20 28 18); stroke: #fff; stroke-width: 2.5; }
+.wl-route .wl-dot { fill: #8fd14f; stroke: #fff; stroke-width: 2; }
+.js .walk-live:not(.done) .wl-route path { stroke-dashoffset: 1; }
+.js .walk-live:not(.done) .wl-dot { opacity: 0; }
+.js .walk-live:not(.done):not(.go) { opacity: 0; transform: translateY(10px); }
+.walk-live { transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.js .walk-live.go:not(.done) .wl-route path { stroke-dashoffset: 0; transition: stroke-dashoffset 2.6s cubic-bezier(0.33, 0, 0.2, 1) 0.2s; }
+.walk-live .wl-dot { transition: opacity 0.3s ease; }
+@media (max-width: 520px) { .walk-live { left: 0; width: 72%; padding: 10px 12px 8px; border-radius: 18px; } .wl-stats b { font-size: 22px; } }
+@media (prefers-reduced-motion: reduce) { .walk-live, .walk-live .wl-route path { transition: none !important; } }
+
+/* The promise, one line after the other when the band comes into view (site.js) */
+.band h2 .line { overflow: hidden; padding-bottom: 0.06em; }
+.band h2 .line > span { display: inline-block; transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.7s ease; }
+.js .band h2[data-reveal]:not(.in) .line > span { transform: translateY(105%); opacity: 0; }
+.band h2.in .line:nth-child(2) > span { transition-delay: 0.14s; }
+.band h2.in .line:nth-child(3) > span { transition-delay: 0.28s; }
+@media (prefers-reduced-motion: reduce) { .band h2 .line > span { transition: none; } }

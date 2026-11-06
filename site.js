@@ -122,3 +122,46 @@
   }
   for (var i = 0; i < lines.length; i++) lines[i].textContent = text;
 })();
+
+// The walk card counts up and draws its route once, when it comes into view; the promise lines rise one by one.
+// Reduced motion or no IntersectionObserver: everything is simply shown finished.
+(function () {
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var canWatch = "IntersectionObserver" in window;
+  function whenSeen(el, ratio, fn) {
+    if (!el) return;
+    if (reduce || !canWatch) { fn(true); return; }
+    var io = new IntersectionObserver(function (entries) {
+      if (!entries.some(function (e) { return e.isIntersecting; })) return;
+      io.disconnect();
+      fn(false);
+    }, { threshold: ratio });
+    io.observe(el);
+  }
+
+  var card = document.querySelector("[data-walk-live]");
+  whenSeen(card, 0.7, function (instant) {
+    var km = card.querySelector("[data-km]"), time = card.querySelector("[data-time]");
+    var KM = 1.81, SECONDS = 25 * 60 + 4, DURATION = 2600;
+    function show(f) {
+      km.textContent = (KM * f).toFixed(2).replace(".", ",");
+      var s = Math.round(SECONDS * f);
+      time.textContent = Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+    }
+    if (instant) { show(1); card.classList.add("done"); return; }
+    show(0);
+    card.classList.add("go");
+    var t0 = 0;
+    function step(now) {
+      if (!t0) t0 = now + 200;
+      var x = Math.min(1, Math.max(0, (now - t0) / DURATION));
+      show(1 - Math.pow(1 - x, 3));
+      if (x < 1) requestAnimationFrame(step);
+      else card.classList.add("done");
+    }
+    requestAnimationFrame(step);
+  });
+
+  var promise = document.querySelector(".band h2[data-reveal]");
+  whenSeen(promise, 0.6, function () { promise.classList.add("in"); });
+})();
