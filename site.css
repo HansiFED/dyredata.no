@@ -113,10 +113,37 @@ p { margin: 0; }
 .hero .facts { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 8px 22px; color: var(--ink-2); font-weight: 700; font-size: 15px; }
 .hero .facts span { display: inline-flex; align-items: center; gap: 8px; }
 .hero .facts svg { width: 18px; height: 18px; color: var(--skog); }
-.hero-phone { justify-self: center; position: relative; }
-@media (max-width: 860px) {
+/* The photo: a tall window onto the beach, running off the right edge on wide screens, with the app in front */
+.hero-visual { position: relative; }
+.hero-photo { display: block; object-fit: cover; }
+.hero-phone { position: relative; z-index: 1; }
+@media (min-width: 1000px) {
+  .hero { padding: clamp(28px, 3.4vw, 48px) 0 clamp(40px, 4.4vw, 64px); }
+  .hero-visual {
+    --phone-w: clamp(250px, 21vw, 300px);
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    min-height: clamp(540px, 48.6vw, 820px);
+    /* out to the right edge of the window */
+    margin-right: calc((min(100vw, var(--wrap)) - 100vw) / 2 - var(--gutter));
+  }
+  /* The left of the photo is kept, so the dog stays clear of the phone */
+  .hero-photo { position: absolute; top: 0; right: 0; bottom: 0; left: calc(var(--phone-w) * 0.5); width: calc(100% - var(--phone-w) * 0.5); height: 100%; object-position: 0% 40%; border-radius: 44px 0 0 44px; }
+  .hero-visual .phone.small { width: var(--phone-w); }
+  .hero-phone { transform: translateY(8%); }
+}
+@media (max-width: 999px) {
   .hero-grid { grid-template-columns: 1fr; }
-  .hero-phone { margin-top: 12px; }
+  .hero-visual { display: grid; justify-items: center; width: min(520px, 100%); margin: 12px auto 0; }
+  .hero-visual > * { grid-area: 1 / 1; }
+  .hero-photo { width: 100%; aspect-ratio: 10 / 11; object-position: 50% 74%; border-radius: 40px; box-shadow: 0 30px 60px -36px rgb(20 40 10 / 0.5); }
+  .hero-phone { margin-top: 62%; }
+}
+/* Phones: the photo goes edge to edge */
+@media (max-width: 600px) {
+  .hero-visual { width: auto; margin-left: calc(-1 * var(--gutter)); margin-right: calc(-1 * var(--gutter)); }
+  .hero-photo { border-radius: 0; box-shadow: none; }
 }
 
 /* Paw trail: the one moving moment, paws stamp across the hero once */
@@ -305,7 +332,6 @@ p { margin: 0; }
   .phone.small { width: min(236px, 62vw); border-radius: 40px; padding: 8px; --pad: 8px; --r: 33px; }
   .phone.small img { border-radius: 33px; }
   .feature { padding: 32px 0 40px; gap: 22px; }
-  .hero-phone { margin-top: 4px; }
   .note { min-height: 52px; padding: 8px 10px; font-size: 10.5px; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 8px; }
   .note-icon { width: 24px; height: 24px; border-radius: 6px; }
   .note-text b { font-size: 11px; }

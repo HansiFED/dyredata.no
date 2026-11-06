@@ -25,7 +25,8 @@
     trail.innerHTML = "";
     var w = trail.clientWidth, h = trail.clientHeight;
     if (!w || !h) return;
-    var narrow = w < 860;
+    // The hero is one column below 1000px (site.css)
+    var narrow = w < 1000;
     // Desktop: along the bottom, then up through the gap between the text and the phone.
     // Phone: from the bottom left up beside the phone, below the buttons.
     var from = { x: -10, y: h * (narrow ? 0.99 : 0.95) };
